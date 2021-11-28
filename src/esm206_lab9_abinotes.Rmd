@@ -40,11 +40,15 @@ lizards %>%
 ```{r}
 utst <- lizards %>% 
   filter(spp == "UTST") %>% # filter to only keep observation where the species column matches UTST
-  filter(site %in% c("IBPE", "RABB", "EAST")) # filter to only keep sites IBPE, RABB, and EAST. Use the in operator to say 'look for any match within the vector that follows'
+  filter(site %in% c("IBPE", "RABB", "EAST")) %>% # filter to only keep sites IBPE, RABB, and EAST. Use the in operator to say 'look for any match within the vector that follows'
+  filter(tail %in% c("B", "W")) # only keep broken or whole tail observations, exclude NA values.
 ```
 
 
-Reminder: if you want to see the different unique levels that exists within a variable we can go to the console and type: unique(utst$site)
+Reminder: if you want to check the different unique levels that exists within a variable we can go to the console and type: unique(utst$site)
+ or unique(data_set$column_name)
+ 
+ 
 
 
 
