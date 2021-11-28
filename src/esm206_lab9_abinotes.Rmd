@@ -1,0 +1,56 @@
+---
+title: "esm206_lab9- Part 2 Chi-square with Lizards"
+author: "Abigail Sanford"
+date: "11/28/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# Attach packages
+library(here)
+library(tidyverse)
+library(janitor)
+library(broom)
+```
+
+## Read in the data
+
+```{r}
+lizards <- read_csv(here("data", "lizards.csv"))
+```
+
+
+# Find counts of lizards in the dataset by species
+
+```{r}
+lizards %>% 
+  count(spp) %>% 
+  arrange(-n) # arrange in decreasing order by variable `n` that contains the count. Now you can see the count of lizards studied for each species
+```
+
+
+## Data wrangling: Make a subset
+
+- Only want a subset with UTST lizards (sideblotched lizards)
+- Only keep sites with 3 highest trap populations: IBPE (enclosure grasslands site), RABB (rabbit mesquite site), "EAST" (east tarbush site).
+- Keep observations where the tail is recorded. (either W = whole, or B = broken)
+
+```{r}
+utst <- lizards %>% 
+  filter(spp == "UTST") %>% # filter to only keep observation where the species column matches UTST
+  filter(site %in% c("IBPE", "RABB", "EAST")) # filter to only keep sites IBPE, RABB, and EAST. Use the in operator to say 'look for any match within the vector that follows'
+```
+
+
+Reminder: if you want to see the different unique levels that exists within a variable we can go to the console and type: unique(utst$site)
+
+
+
+
+
+
+
+
+
