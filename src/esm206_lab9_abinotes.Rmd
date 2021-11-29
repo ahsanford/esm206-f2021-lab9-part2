@@ -49,6 +49,49 @@ Reminder: if you want to check the different unique levels that exists within a 
  or unique(data_set$column_name)
  
  
+ ## Find Counts and Proportions of Lizards with Broken or Whole Tails and Each Site 
+ 
+ These are all sideblotched lizards, so just a reminder to keep that in mind when doing a write up.
+ 
+1) normal way: use count function from dplyr and say I want to count by site and tail columns. which will tell me, for each site how many lizards had a recorded broken tail and how many lizards had a recorded whole tail.
+
+- It comes out difficult to read and kind of ugly. It's good for data analysis (cause it's very obvious and long what each measurement is coming from), but is bad for communication. It has the right information, but there's a better way that we can do this.
+
+sidenote: you can use pivotwinder to change the tail column into two different outcomes, and then have the counts listed that way
+ 
+```{r}
+utst %>% 
+  count(site,tail) # count observations in site and tail
+
+```
+ 
+ 
+2) use janitor that returns counts in contingency table format. WE can also use it to show proportion directly, which is really useful when we are going to be using a chi-squared test.
+
+- Rstudio's default is to calculate precentages (proportions) by rows. We can change that.
+
+```{r}
+tail_count <- utst %>% 
+  janitor::tabyl(site, tail) # create contingency table dataframe using the janitor package and tabyl function. we put the `janitor::` to tell rstudio which package we want it to use.
+
+tail_proportions <- tail_count %>% 
+  janitor::adorn_percentages() %>% # shows percentage of lizards at each site
+  janitor::adorn_pct_formatting(digits = 2) %>% # round by 2 decimal places
+  janitor::adorn_ns() # get the actual count for each tail
+
+tail_proportions # then I could make a nice pretty table using all the other tricks we have used previously to make nice looking tables
+
+```
+
+ 
+Now we want to test: Do we have enough evidence to reject the null hypothesis that tail breakage is independent of site?
+
+first we need to convert the information in tail_count data frame into a true contingency table. Which means only the count information exists in the table. In the current tail_count data frame, the sites column is being read as data. It is site information that is additional information to the counts. Which we don't want. So we are going to use a function called togonames that converts the column we want into row names instead so all we are left with is the contingency table with counts.
+ 
+ 
+ 
+ 
+ 
 
 
 
