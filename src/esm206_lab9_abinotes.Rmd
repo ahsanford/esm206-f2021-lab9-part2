@@ -86,10 +86,47 @@ tail_proportions # then I could make a nice pretty table using all the other tri
  
 Now we want to test: Do we have enough evidence to reject the null hypothesis that tail breakage is independent of site?
 
-first we need to convert the information in tail_count data frame into a true contingency table. Which means only the count information exists in the table. In the current tail_count data frame, the sites column is being read as data. It is site information that is additional information to the counts. Which we don't want. So we are going to use a function called togonames that converts the column we want into row names instead so all we are left with is the contingency table with counts.
+first we need to convert the information in tail_count data frame into a true contingency table. Which means only the count information exists in the table. In the current tail_count data frame, the sites column is being read as data. It is site information that is additional information to the counts. Which we don't want. So we are going to use a function called `column_to_rowname` that converts the column we want into row names instead so all we are left with is the contingency table with counts.
+
+## Convert to a contingency table
+
+Use `column_to_rowname()` function to do that. 
+
+```{r}
+lizard_ct <- tail_count %>% 
+  column_to_rownames(var = "site") # variable = "column_name_to_convert". Quotations indicate we are removing it as a variable, and we are using the inputs for row names instead. 
+```
+
+Once we have our data in the format where there is only count data, we can run a chisquared test. 
+
+## Chi-square
+
+Are tail breakage and site independent. If the sites are independent, we would expect very little difference in the count proportions between the three sites. 
+
+Chi square can be challenging because we can ask the same question in many different ways. But once we have it in the right format, and know what question to ask, the code is straightforward.
+
+```{r}
+lizard_x2 <- chisq.test(lizard_ct)
+
+lizard_x2 # gives you the chisquared test statistic value, the aggregrate value how different the values in our tables are from the 'perfect situation' values.degrees of freedom = ((number_of_rows - 1) * (number_of_columns - 1)). p-value, a probability of 0.0014
+
+lizard_tidy <- broom::tidy(lizard_x2) # creates a new dataframe that is a tidy dataframe that we can easily pull info from for inline referencing. 
+
+```
+
+
+Use a significance level of .05, yes we have sufficient evidence to reject the null hypothesis of evidence. SO we retain the alternative hypothesis that site and tail breakage are not independent.
  
- 
- 
+Different ways to write it: 
+
+There is a significant association (i.e. non-independence) between site and lizard tail breakage ($\chi$^2^(`r lizard_tidy$parameter`) = `r round(lizard_tidy$statistic,2)`, *p* = `r round(lizard_tidy$p.value, 3)`).
+
+lizard_tidy$parameter: gives you the degrees of freedom
+lizard_tidy$statistic: 
+*p* = `r lizard_tidy$p.value: gives you the p-value
+
+- Site and lizard tail breakage are not independent.
+
  
  
 
